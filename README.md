@@ -10,24 +10,6 @@ It implements:
 - Persistent durability via fsync
 - Concurrent client handling
 
-This project demonstrates core distributed systems and backend infrastructure concepts similar to Kafka, but simplified for educational and interview purposes.
-
----
-
-## Why This Project?
-
-Modern message brokers (e.g., Kafka) are built around:
-
-- Append-only logs
-- Sequential disk writes
-- Consumer-controlled offsets
-- Partition-based scalability
-- High throughput via batching
-
-This project implements the fundamental log abstraction that powers such systems.
-
----
-
 ## Architecture Overview
 
 Client (Producer / Consumer)
@@ -43,7 +25,7 @@ Client (Producer / Consumer)
 
 Each topic is stored as:
 
-data/<topic>.log
+<topic>.log
 
 Messages are stored in a binary format:
 
@@ -137,42 +119,10 @@ This ensures:
 
 ---
 
-## Durability Model
-
-MVP mode:
-- write() to file
-- file.Sync()
-- ACK to client
-
-This ensures that once a client receives OK, the message is durable on disk.
-
-Future optimization:
-- Batched fsync
-- Configurable sync interval
-- High-throughput mode
-
----
-
-## Project Structure
-
-cmd/
-  server/
-    main.go
-
-internal/
-  server/
-  storage/
-  protocol/
-
-data/
-  (log files created automatically)
-
----
-
 ## How to Run
 
 1. Build:
-   go build -o logmq ./cmd/server
+   go build 
 
 2. Start server:
    ./logmq
@@ -210,64 +160,3 @@ CONSUME orders 0
 
 ---
 
-## Performance Goals (To Be Benchmarked)
-
-Target (single-node):
-- 10k–50k msgs/sec (no fsync batching)
-- Higher throughput with batched fsync
-
-Benchmarking to be added.
-
----
-
-## Future Enhancements
-
-- Partitioning
-- Consumer groups
-- Replication
-- Leader election
-- REST API
-- Batching
-- Compression
-- Metrics endpoint
-- Load testing scripts
-- Dockerization
-- Horizontal scaling
-- Raft consensus
-
----
-
-## Key Concepts Demonstrated
-
-- Append-only log design
-- Offset-based consumption
-- Sequential disk IO optimization
-- TCP protocol design
-- Binary file encoding
-- Concurrency in Go
-- Durability trade-offs
-- Backend infrastructure fundamentals
-
----
-
-## Learning Outcomes
-
-This project explores:
-
-- Why log-based storage is powerful
-- How distributed systems use offsets
-- How durability works (fsync vs page cache)
-- Why sequential IO is critical for performance
-- How message brokers achieve scalability
-
----
-
-## Resume Description (Example)
-
-Built a disk-backed log-based message broker in Go supporting offset-based replay, append-only storage, and concurrent TCP clients; implemented binary log format with fsync-backed durability and achieved X msgs/sec throughput.
-
----
-
-## License
-
-MIT (or your choice)
