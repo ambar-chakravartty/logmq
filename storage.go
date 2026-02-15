@@ -2,32 +2,38 @@ package main
 
 import (
 	"encoding/binary"
-	"fmt"
-	"log"
+	"io"
 	"os"
 )
 
 func check(err error){
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 }
 
-func Produce(topic string, msg string) {		
+func Produce(topic string, msg string) uint {		
 	filename :=  topic+".log"
 	file, err := os.OpenFile(filename,os.O_WRONLY | os.O_APPEND | os.O_CREATE, 0666)
 	check(err)
 	defer file.Close()
-	
+
+	var offset int64 
+	offset,err = file.Seek(0, io.SeekCurrent)
+	check(err)
+
 	err = binary.Write(file, binary.LittleEndian, uint32(len(msg)))
 	check(err)
 
 	_,err = file.Write([]byte(msg))
 	check(err)
+	file.Sync()
+
+	return uint(offset)
 }
 
 
-func Consume(topic string, offset uint) {
+func Consume(topic string, offset uint) (uint,string) {
 	filename := topic+".log"
 	file,err := os.Open(filename)
 	check(err)
@@ -40,5 +46,6 @@ func Consume(topic string, offset uint) {
 
 	var buf []byte = make([]byte,msgLen)
 	_,err = file.Read(buf)
-	fmt.Println(string(buf))
+
+	return uint(msgLen),string(buf)
 }
