@@ -19,7 +19,7 @@ func Produce(topic string, msg string) uint {
 	defer file.Close()
 
 	var offset int64 
-	offset,err = file.Seek(0, io.SeekCurrent)
+	offset,err = file.Seek(0, io.SeekEnd)
 	check(err)
 
 	err = binary.Write(file, binary.LittleEndian, uint32(len(msg)))
